@@ -1,7 +1,16 @@
+import 'dart:js_interop_unsafe';
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:iot_dashboard/resources/repo/DataRepo.dart';
+
+import '../resources/model/ActionDataTableSrc.dart';
+import '../resources/widgets/DataTable.dart';
 
 class ActionPage extends StatefulWidget {
+  const ActionPage({super.key});
+
   @override
   _ActionPageState createState() => _ActionPageState();
 }
@@ -9,113 +18,45 @@ class ActionPage extends StatefulWidget {
 class _ActionPageState extends State<ActionPage> {
   @override
   Widget build(BuildContext context) {
-    return const SingleChildScrollView(
+    return SingleChildScrollView(
       scrollDirection: Axis.vertical,
-      child: ActionTable(),
+      child: Container(
+          width: double.infinity,
+          child: MyDataTable(
+            data: DataRepo.instance.listActionData,
+            header: "Actions",
+            columns: ActionDataTableSrc.getColumn(),
+          )),
     );
   }
 }
 
-class ActionTable extends StatelessWidget {
-  const ActionTable({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return DataTableDemo();
-  }
-}
-
-class DataTableDemo extends StatelessWidget {
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Data Tables'),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          PaginatedDataTable(
-            header: Text('Header Text'),
-            rowsPerPage: 4,
-            columns: [
-              DataColumn(label: Text('Header A')),
-              DataColumn(label: Text('Header B')),
-              DataColumn(label: Text('Header C')),
-              DataColumn(label: Text('Header D')),
-            ],
-            source: _DataSource(context),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _Row {
-  _Row(
-    this.valueA,
-    this.valueB,
-    this.valueC,
-    this.valueD,
-  );
-
-  final String valueA;
-  final String valueB;
-  final String valueC;
-  final int valueD;
-
-  bool selected = false;
-}
-
-class _DataSource extends DataTableSource {
-  _DataSource(this.context) {
-    _rows = <_Row>[
-      _Row('Cell A1', 'CellB1', 'CellC1', 1),
-      _Row('Cell A2', 'CellB2', 'CellC2', 2),
-      _Row('Cell A3', 'CellB3', 'CellC3', 3),
-      _Row('Cell A4', 'CellB4', 'CellC4', 4),
-    ];
-  }
-
-  final BuildContext context;
-  late List<_Row> _rows;
-
-  int _selectedCount = 0;
-
-  @override
-  DataRow? getRow(int index) {
-    assert(index >= 0);
-    if (index >= _rows.length) return null;
-    final row = _rows[index];
-    return DataRow.byIndex(
-      index: index,
-      selected: row.selected,
-      onSelectChanged: (value) {
-        if (row.selected != value) {
-          if (value == true) {
-            _selectedCount += 1;
-          } else
-            _selectedCount -= 1;
-          assert(_selectedCount >= 0);
-          row.selected = value!;
-          notifyListeners();
-        }
-      },
-      cells: [
-        DataCell(Text(row.valueA)),
-        DataCell(Text(row.valueB)),
-        DataCell(Text(row.valueC)),
-        DataCell(Text(row.valueD.toString())),
-      ],
-    );
-  }
-
-  @override
-  int get rowCount => _rows.length;
+// The "soruce" of the table
+class MyData extends DataTableSource {
+  // Generate some made-up data
+  final List<Map<String, dynamic>> _data = List.generate(
+      200,
+      (index) => {
+            "id": index,
+            "title": "Item $index",
+            "price": Random().nextInt(10000)
+          });
 
   @override
   bool get isRowCountApproximate => false;
 
   @override
-  int get selectedRowCount => _selectedCount;
+  int get rowCount => _data.length;
+
+  @override
+  int get selectedRowCount => 0;
+
+  @override
+  DataRow getRow(int index) {
+    return DataRow(cells: [
+      DataCell(Text(_data[index]['id'].toString())),
+      DataCell(Text(_data[index]["title"])),
+      DataCell(Text(_data[index]["price"].toString())),
+    ]);
+  }
 }

@@ -44,6 +44,8 @@ dependencies:
   firebase_database: ^10.2.5
   mqtt5_client: ^4.0.2
   fimber: ^0.7.0
+  firebase_core: ^2.17.0
+  get: ^4.6.6
 
 dev_dependencies:
   flutter_test:

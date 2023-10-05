@@ -1,5 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:iot_dashboard/resources/model/DHT11DataTableSrc.dart';
+
+import '../resources/model/ActionDataTableSrc.dart';
+import '../resources/repo/DataRepo.dart';
+import '../resources/widgets/DataTable.dart';
 
 class DataSensorPage extends StatefulWidget {
   @override
@@ -9,9 +14,15 @@ class DataSensorPage extends StatefulWidget {
 class _DataSensorPageState extends State<DataSensorPage> {
   @override
   Widget build(BuildContext context) {
-    return const SingleChildScrollView(
+    return SingleChildScrollView(
       scrollDirection: Axis.vertical,
-      child: DataSensorTable(),
+      child: SizedBox(
+          width: double.infinity,
+          child: MyDataTable(
+            data: DataRepo.instance.listDHT11Data,
+            header: "Data Sensor",
+            columns: DHT11DataTableSrc.getColumn(),
+          )),
     );
   }
 }

@@ -11,6 +11,7 @@ import '../resources/widgets/AnimatedBox.dart';
 import '../resources/widgets/GradientBox.dart';
 import 'dart:math' as math;
 
+import '../resources/widgets/SearchView.dart';
 import 'action_page.dart';
 import 'home_page.dart';
 

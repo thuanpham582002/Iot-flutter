@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:iot_dashboard/resources/repo/MQTT.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
+import '../resources/model/DHT11Data.dart';
 import '../resources/model/LiveData.dart';
 import '../resources/widgets/AnimatedBox.dart';
 import '../resources/widgets/GradientBox.dart';
