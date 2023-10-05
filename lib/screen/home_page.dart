@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:iot_dashboard/resources/repo/MQTT.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../resources/model/LiveData.dart';
@@ -56,28 +57,28 @@ class _MyHomePageState extends State<MyHomePage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            const Padding(padding: EdgeInsets.all(8)),
             Expanded(
+                flex: 1,
                 child: GradientBox(
-              title: 'Temperature',
-              gradientColors: [Colors.red, Colors.yellow],
-              detail: '${chartTemperature.last.speed}°C',
-            )),
-            const Padding(padding: EdgeInsets.all(8)),
+                  title: 'Temperature',
+                  gradientColors: [Colors.red, Colors.yellow],
+                  detail: '${chartTemperature.last.speed}°C',
+                )),
+            const Spacer(flex: 1),
             Expanded(
+                flex: 1,
                 child: GradientBox(
-              title: 'Humidity',
-              gradientColors: [Colors.blue, Colors.lightBlue],
-              detail: '${chartHumidity.last.speed}%',
-            )),
-            const Padding(padding: EdgeInsets.all(8)),
+                  title: 'Humidity',
+                  gradientColors: [Colors.blue, Colors.lightBlue],
+                  detail: '${chartHumidity.last.speed}%',
+                )),
+            const Spacer(flex: 1),
             Expanded(
                 child: GradientBox(
               title: 'Light',
               gradientColors: [Colors.orange, Colors.yellow],
-              detail: '${chartLight.last.speed}%',
+              detail: '${chartLight.last.speed}Lux',
             )),
-            const Padding(padding: EdgeInsets.all(8)),
           ],
         ),
         // Middle Row with 2 Buttons on the left
@@ -86,7 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                flex: 2,
+                flex: 4,
                 child: buildSfCartesianChart(),
               ),
               Expanded(
@@ -101,6 +102,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         animationPath: 'assets/lottie/fan.json',
                         // Replace with your Lottie animation file path
                         detail: 'Turn on the pan',
+                        onSwitchChanged: (bool value) {
+                          MQTT.instance.setFan(value.toString());
+                        },
                       ),
                       // Box for "Light Bulb" with Lottie Animation, Toggle, and Detail Text
                       AnimatedBox(
@@ -108,6 +112,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         animationPath: 'assets/lottie/light_bulb.json',
                         // Replace with your Lottie animation file path
                         detail: 'Turn on the light bulb',
+                        onSwitchChanged: (bool value) {
+                          MQTT.instance.setLed(value.toString());
+                        },
                       ),
                     ],
                   )),

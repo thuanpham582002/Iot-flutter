@@ -41,6 +41,9 @@ dependencies:
   cupertino_icons: ^1.0.2
   syncfusion_flutter_charts: ^22.2.12
   lottie: ^2.6.0
+  firebase_database: ^10.2.5
+  mqtt5_client: ^4.0.2
+  fimber: ^0.7.0
 
 dev_dependencies:
   flutter_test:

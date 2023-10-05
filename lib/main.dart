@@ -1,14 +1,9 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:iot_dashboard/resources/widgets/AnimatedBox.dart';
-import 'package:iot_dashboard/resources/widgets/GradientBox.dart';
+import 'package:iot_dashboard/resources/repo/MQTT.dart';
 import 'package:iot_dashboard/screen/app_container.dart';
-import 'package:iot_dashboard/screen/home_page.dart';
-import 'package:lottie/lottie.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 
 void main() {
+  MQTT.instance;
   runApp(const MyApp());
 }
 
@@ -21,22 +16,26 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       routes: {
-        '/home': (context) => const AppContainer(
-              title: 'IOT Dashboard',
-              routeName: '/home',
-            ),
-        '/datasensor': (context) => const AppContainer(
-              title: 'Data sensor',
-              routeName: '/datasensor',
-            ),
-        '/action': (context) => const AppContainer(
-              title: 'Action',
-              routeName: '/action',
-            ),
-        '/about': (context) => const AppContainer(
-              title: 'About',
-              routeName: '/about',
-            ),
+        '/home': (context) =>
+        const AppContainer(
+          title: 'IOT Dashboard',
+          routeName: '/home',
+        ),
+        '/datasensor': (context) =>
+        const AppContainer(
+          title: 'Data sensor',
+          routeName: '/datasensor',
+        ),
+        '/action': (context) =>
+        const AppContainer(
+          title: 'Action',
+          routeName: '/action',
+        ),
+        '/about': (context) =>
+        const AppContainer(
+          title: 'About',
+          routeName: '/about',
+        ),
       },
       theme: ThemeData(
         // This is the theme of your application.
@@ -61,3 +60,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+

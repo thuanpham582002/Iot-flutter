@@ -136,7 +136,8 @@ class _AppContainerState extends State<AppContainer> {
           ],
         ),
       ),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
         child: widget.routeName == '/home'
             ? const MyHomePage()
             : widget.routeName == '/datasensor'
