@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:iot_dashboard/resources/model/DHT11Data.dart';
 
 import 'CrudDataTableSrc.dart';
 

@@ -1,11 +1,17 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:iot_dashboard/resources/repo/DataRepo.dart';
 import 'package:mqtt5_client/mqtt5_client.dart';
 import 'package:mqtt5_client/mqtt5_browser_client.dart';
+
+import '../model/DHT11Data.dart';
 
 class MQTT {
   static const ledTopic = 'iot/led';
   static const fanTopic = 'iot/fan';
+  static const dht11Topic = 'iot/dht';
   final client = MqttBrowserClient('ws://test.mosquitto.org', '');
   static MQTT? _instance;
 
@@ -58,6 +64,30 @@ class MQTT {
   Future<void> connect() async {
     try {
       await client.connect();
+      client.subscribe(dht11Topic, MqttQos.atLeastOnce);
+
+      /// The client has a change notifier object(see the Observable class) which we then listen to to get
+      /// notifications of published updates to each subscribed topic.
+      client.updates.listen((List<MqttReceivedMessage<MqttMessage>> c) {
+        final recMess = c[0].payload as MqttPublishMessage;
+        final pt =
+            MqttUtilities.bytesToStringAsString(recMess.payload.message!);
+
+        /// The above may seem a little convoluted for users only interested in the
+        /// payload, some users however may be interested in the received publish message,
+        /// lets not constrain ourselves yet until the package has been in the wild
+        /// for a while.
+        /// The payload is a byte buffer, this will be specific to the topic
+        print(
+            'EXAMPLE::Change notification:: topic is <${c[0].topic}>, payload is <-- $pt -->');
+
+        /// Indicate the notification is correct
+        if (c[0].topic == dht11Topic) {
+          print(pt);
+          // json {"humid":null,"temp":null,"lux":1.137934968e-9,"seconds":1696539944}
+          DataRepo.instance.setDHT11Data(DHT11Data.fromJson(jsonDecode(pt)));
+        }
+      });
     } on Exception catch (e) {
       print('EXAMPLE::client exception - $e');
       client.disconnect();
@@ -70,8 +100,7 @@ class MQTT {
   /// The subscribed callback
   void onSubscribed(MqttSubscription subscription) {
     print(
-        'EXAMPLE::Subscription confirmed for topic ${subscription.topic
-            .rawTopic}');
+        'EXAMPLE::Subscription confirmed for topic ${subscription.topic.rawTopic}');
   }
 
   /// The unsolicited disconnect callback

@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:iot_dashboard/resources/repo/DataRepo.dart';
 import 'package:iot_dashboard/resources/repo/MQTT.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -28,9 +30,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late List<LiveData> chartTemperature;
-  late List<LiveData> chartHumidity;
-  late List<LiveData> chartLight;
+  List<LiveData> chartTemperature = [];
+  List<LiveData> chartHumidity = [];
+  List<LiveData> chartLight = [];
   late ChartSeriesController _chartSeriesControllerTemperature;
   late ChartSeriesController _chartSeriesControllerHumidity;
   late ChartSeriesController _chartSeriesControllerLight;
@@ -38,10 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    chartTemperature = getChartTemperature();
-    chartHumidity = getChartHumidity();
-    chartLight = getChartLight();
-    Timer.periodic(const Duration(seconds: 1), updateDataSource);
+    updateDataSource();
   }
 
   @override
@@ -63,7 +62,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: GradientBox(
                   title: 'Temperature',
                   gradientColors: [Colors.red, Colors.yellow],
-                  detail: '${chartTemperature.last.speed}°C',
+                  detail: chartTemperature.length > 0
+                      ? chartTemperature.last.speed.toString() + '°C'
+                      : '0°C',
                 )),
             const Spacer(flex: 1),
             Expanded(
@@ -71,14 +72,18 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: GradientBox(
                   title: 'Humidity',
                   gradientColors: [Colors.blue, Colors.lightBlue],
-                  detail: '${chartHumidity.last.speed}%',
+                  detail: chartHumidity.length > 0
+                      ? chartHumidity.last.speed.toString() + '%'
+                      : '0%',
                 )),
             const Spacer(flex: 1),
             Expanded(
                 child: GradientBox(
               title: 'Light',
               gradientColors: [Colors.orange, Colors.yellow],
-              detail: '${chartLight.last.speed}Lux',
+              detail: chartLight.length > 0
+                  ? chartLight.last.speed.toString() + 'lux'
+                  : '0lux',
             )),
           ],
         ),
@@ -130,9 +135,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   SfCartesianChart buildSfCartesianChart() {
     return SfCartesianChart(
+      primaryXAxis: DateTimeAxis(),
       legend: const Legend(isVisible: true),
-      series: <LineSeries<LiveData, int>>[
-        LineSeries<LiveData, int>(
+      series: <LineSeries<LiveData, DateTime>>[
+        LineSeries<LiveData, DateTime>(
           name: 'Temperature',
           onRendererCreated: (ChartSeriesController controller) {
             _chartSeriesControllerTemperature = controller;
@@ -142,7 +148,7 @@ class _MyHomePageState extends State<MyHomePage> {
           xValueMapper: (LiveData sales, _) => sales.time,
           yValueMapper: (LiveData sales, _) => sales.speed,
         ),
-        LineSeries<LiveData, int>(
+        LineSeries<LiveData, DateTime>(
           name: 'Humidity',
           onRendererCreated: (ChartSeriesController controller) {
             _chartSeriesControllerHumidity = controller;
@@ -152,7 +158,7 @@ class _MyHomePageState extends State<MyHomePage> {
           xValueMapper: (LiveData sales, _) => sales.time,
           yValueMapper: (LiveData sales, _) => sales.speed,
         ),
-        LineSeries<LiveData, int>(
+        LineSeries<LiveData, DateTime>(
           name: 'Light',
           onRendererCreated: (ChartSeriesController controller) {
             _chartSeriesControllerLight = controller;
@@ -166,96 +172,71 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  int time = 19;
+  void updateDataSource() {
+    DataRepo.instance.listDHT11Data.addListener(() {
+      log('updateDataSource ${DataRepo.instance.listDHT11Data.read().length}');
+      // pick last 30 data
+      chartTemperature = DataRepo.instance.listDHT11Data
+          .read()
+          .getRange(
+              DataRepo.instance.listDHT11Data.read().length - 30 > 0
+                  ? DataRepo.instance.listDHT11Data.read().length - 30
+                  : 0,
+              DataRepo.instance.listDHT11Data.read().length)
+          .map((e) => LiveData(e.time, e.temperature))
+          .toList();
 
-  void updateDataSource(Timer timer) {
-    chartTemperature.add(LiveData(time++, (math.Random().nextInt(60) + 30)));
-    chartTemperature.removeAt(0);
-    _chartSeriesControllerTemperature.updateDataSource(
-        addedDataIndex: chartTemperature.length - 1, removedDataIndex: 0);
-    chartHumidity.add(LiveData(time++, (math.Random().nextInt(60) + 30)));
-    chartHumidity.removeAt(0);
-    _chartSeriesControllerHumidity.updateDataSource(
-        addedDataIndex: chartHumidity.length - 1, removedDataIndex: 0);
+      chartHumidity = DataRepo.instance.listDHT11Data
+          .read()
+          .getRange(
+              DataRepo.instance.listDHT11Data.read().length - 30 > 0
+                  ? DataRepo.instance.listDHT11Data.read().length - 30
+                  : 0,
+              DataRepo.instance.listDHT11Data.read().length)
+          .map((e) => LiveData(e.time, e.humidity))
+          .toList();
 
-    chartLight.add(LiveData(time++, (math.Random().nextInt(60) + 30)));
-    chartLight.removeAt(0);
-    _chartSeriesControllerLight.updateDataSource(
-        addedDataIndex: chartLight.length - 1, removedDataIndex: 0);
-    setState(() {
-      // Rebuild UI
+      chartLight = DataRepo.instance.listDHT11Data
+          .read()
+          .getRange(
+              DataRepo.instance.listDHT11Data.read().length - 30 > 0
+                  ? DataRepo.instance.listDHT11Data.read().length - 30
+                  : 0,
+              DataRepo.instance.listDHT11Data.read().length)
+          .map((e) => LiveData(e.time, e.lux))
+          .toList();
+      if (chartTemperature.length > 30) {
+        _chartSeriesControllerTemperature.updateDataSource(
+            addedDataIndex: chartTemperature.length - 1, removedDataIndex: 0);
+      }
+
+      if (chartHumidity.length > 30) {
+        _chartSeriesControllerHumidity.updateDataSource(
+            addedDataIndex: chartHumidity.length - 1, removedDataIndex: 0);
+      }
+
+      if (chartLight.length > 30) {
+        _chartSeriesControllerLight.updateDataSource(
+            addedDataIndex: chartLight.length - 1, removedDataIndex: 0);
+      }
+
+      setState(() {
+        // Rebuild UI
+      });
     });
-  }
-
-  List<LiveData> getChartTemperature() {
-    return <LiveData>[
-      LiveData(0, 42),
-      LiveData(1, 47),
-      LiveData(2, 43),
-      LiveData(3, 49),
-      LiveData(4, 54),
-      LiveData(5, 41),
-      LiveData(6, 58),
-      LiveData(7, 51),
-      LiveData(8, 98),
-      LiveData(9, 41),
-      LiveData(10, 53),
-      LiveData(11, 72),
-      LiveData(12, 86),
-      LiveData(13, 52),
-      LiveData(14, 94),
-      LiveData(15, 92),
-      LiveData(16, 86),
-      LiveData(17, 72),
-      LiveData(18, 94)
-    ];
-  }
-
-  List<LiveData> getChartHumidity() {
-    return <LiveData>[
-      LiveData(0, 12),
-      LiveData(1, 17),
-      LiveData(2, 13),
-      LiveData(3, 19),
-      LiveData(4, 14),
-      LiveData(5, 11),
-      LiveData(6, 18),
-      LiveData(7, 11),
-      LiveData(8, 18),
-      LiveData(9, 11),
-      LiveData(10, 13),
-      LiveData(11, 12),
-      LiveData(12, 16),
-      LiveData(13, 12),
-      LiveData(14, 14),
-      LiveData(15, 12),
-      LiveData(16, 16),
-      LiveData(17, 12),
-      LiveData(18, 14)
-    ];
-  }
-
-  List<LiveData> getChartLight() {
-    return <LiveData>[
-      LiveData(0, 12),
-      LiveData(1, 17),
-      LiveData(2, 13),
-      LiveData(3, 19),
-      LiveData(4, 14),
-      LiveData(5, 11),
-      LiveData(6, 18),
-      LiveData(7, 11),
-      LiveData(8, 18),
-      LiveData(9, 11),
-      LiveData(10, 13),
-      LiveData(11, 12),
-      LiveData(12, 16),
-      LiveData(13, 12),
-      LiveData(14, 14),
-      LiveData(15, 12),
-      LiveData(16, 16),
-      LiveData(17, 12),
-      LiveData(18, 14)
-    ];
+    // chartTemperature.add(LiveData(time++, (math.Random().nextInt(60) + 30)));
+    // chartTemperature.removeAt(0);
+    // _chartSeriesControllerTemperature.updateDataSource(
+    //     addedDataIndex: chartTemperature.length - 1, removedDataIndex: 0);
+    // chartHumidity.add(LiveData(time++, (math.Random().nextInt(60) + 30)));
+    // chartHumidity.removeAt(0);
+    // _chartSeriesControllerHumidity.updateDataSource(
+    //     addedDataIndex: chartHumidity.length - 1, removedDataIndex: 0);
+    //
+    // chartLight.add(LiveData(time++, (math.Random().nextInt(60) + 30)));
+    // chartLight.removeAt(0);
+    // _chartSeriesControllerLight.updateDataSource(
+    //     addedDataIndex: chartLight.length - 1, removedDataIndex: 0);
+    //
   }
 }

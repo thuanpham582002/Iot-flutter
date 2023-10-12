@@ -1,6 +1,6 @@
 class LiveData {
   LiveData(this.time, this.speed);
 
-  final int time;
+  final DateTime time;
   final num speed;
 }
