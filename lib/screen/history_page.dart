@@ -201,7 +201,6 @@ class _DataSensorPageState extends State<DataSensorPage> {
     }
     data.notifyListeners();
   }
-
   void sortTemperature() {
     if (isAscending) {
       data.read().sort((a, b) {
