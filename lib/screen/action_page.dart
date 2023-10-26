@@ -27,7 +27,18 @@ class _ActionPageState extends State<ActionPage> {
             children: [
               Row(
                 children: [
-                  FilterView(),
+                  FilterView(
+                    onAscendingPressed: () {
+                      setState(() {
+                        sortAscending();
+                      });
+                    },
+                    onDescendingPressed: () {
+                      setState(() {
+                        sortDescending();
+                      });
+                    },
+                  ),
                 ],
               ),
               SearchView(
@@ -37,10 +48,13 @@ class _ActionPageState extends State<ActionPage> {
                   });
                 },
               ),
-              MyDataTable(
-                data: DataRepo.instance.listActionData,
-                header: "Actions",
-                columns: ActionDataTableSrc.getColumn(),
+              Container(
+                width: double.infinity,
+                child: MyDataTable(
+                  data: data,
+                  header: "Actions",
+                  columns: ActionDataTableSrc.getColumn(),
+                ),
               ),
             ],
           )),
@@ -58,5 +72,19 @@ class _ActionPageState extends State<ActionPage> {
       }
     }
     return _data;
+  }
+
+  void sortAscending() {
+    data.read().sort((a, b) {
+      return a.id.compareTo(b.id);
+    });
+    data.notifyListeners();
+  }
+
+  void sortDescending() {
+    data.read().sort((a, b) {
+      return b.id.compareTo(a.id);
+    });
+    data.notifyListeners();
   }
 }

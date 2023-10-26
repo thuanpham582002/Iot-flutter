@@ -8,8 +8,8 @@ class ActionDataTableSrc<ActionData> extends CrudDataTableSrc {
     final item = read()[index];
     return DataRow(cells: [
       DataCell(Text(item.id.toString())),
-      DataCell(Text(item.statusFan.toString())),
-      DataCell(Text(item.statusLed.toString())),
+      DataCell(Text(item.device)),
+      DataCell(Text(item.status.toString())),
       DataCell(Text(item.time.toString())),
     ]);
   }
@@ -17,8 +17,8 @@ class ActionDataTableSrc<ActionData> extends CrudDataTableSrc {
   static getColumn() {
     return [
       const DataColumn(label: Expanded(child: Text("ID"))),
-      const DataColumn(label: Expanded(child: Text("Status Fan"))),
-      const DataColumn(label: Expanded(child: Text("Status Led"))),
+      const DataColumn(label: Expanded(child: Text("Device"))),
+      const DataColumn(label: Expanded(child: Text("Status"))),
       const DataColumn(label: Expanded(child: Text("Time"))),
     ];
   }

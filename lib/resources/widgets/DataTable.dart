@@ -22,6 +22,7 @@ class _MyDataTableState extends State<MyDataTable> {
   @override
   Widget build(BuildContext context) {
     return PaginatedDataTable(
+
       source: widget.data,
       header: Text(widget.header),
       columns: widget.columns,

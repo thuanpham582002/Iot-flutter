@@ -10,6 +10,8 @@ class DHT11DataTableSrc<DHT11Data> extends CrudDataTableSrc {
       DataCell(Text(item.id.toString())),
       DataCell(Text(item.temperature.toString())),
       DataCell(Text(item.humidity.toString())),
+      DataCell(Text(item.lux.toString())),
+      DataCell(Text(item.dust.toString())),
       DataCell(Text(item.time.toString())),
     ]);
   }
@@ -19,6 +21,8 @@ class DHT11DataTableSrc<DHT11Data> extends CrudDataTableSrc {
       const DataColumn(label: Expanded(child: Text("ID"))),
       const DataColumn(label: Expanded(child: Text("Temperature"))),
       const DataColumn(label: Expanded(child: Text("Humidity"))),
+      const DataColumn(label: Expanded(child: Text("Lux"))),
+      const DataColumn(label: Expanded(child: Text("Dus"))),
       const DataColumn(label: Expanded(child: Text("Time"))),
     ];
   }

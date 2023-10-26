@@ -11,6 +11,7 @@ import '../model/DHT11Data.dart';
 class MQTT {
   static const ledTopic = 'iot/led';
   static const fanTopic = 'iot/fan';
+  static const dustTopic = 'iot/dust';
   static const dht11Topic = 'iot/dht';
   final client = MqttBrowserClient('ws://test.mosquitto.org', '');
   static MQTT? _instance;
@@ -85,7 +86,7 @@ class MQTT {
         if (c[0].topic == dht11Topic) {
           print(pt);
           // json {"humid":null,"temp":null,"lux":1.137934968e-9,"seconds":1696539944}
-          DataRepo.instance.setDHT11Data(DHT11Data.fromJson(jsonDecode(pt)));
+          DataRepo.instance.setDHT11Data(DHT11Data.fromJsonArduno(jsonDecode(pt)));
         }
       });
     } on Exception catch (e) {
@@ -141,5 +142,25 @@ class MQTT {
     final builder = MqttPayloadBuilder();
     builder.addString(message);
     client.publishMessage(fanTopic, MqttQos.exactlyOnce, builder.payload!);
+  }
+
+  void setDust(String message) {
+    if (!isConnected) {
+      // Show error message
+      return;
+    }
+    final builder = MqttPayloadBuilder();
+    builder.addString(message);
+    client.publishMessage(dustTopic, MqttQos.exactlyOnce, builder.payload!);
+  }
+
+  void setDHT11Data(DHT11Data data) {
+    if (!isConnected) {
+      // Show error message
+      return;
+    }
+    final builder = MqttPayloadBuilder();
+    builder.addString(jsonEncode(data.toJson()));
+    client.publishMessage(dht11Topic, MqttQos.exactlyOnce, builder.payload!);
   }
 }

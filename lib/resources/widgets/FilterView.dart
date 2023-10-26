@@ -33,11 +33,31 @@ class _FilterViewState extends State<FilterView> {
       children: [
         Row(children: [
           // Acending Button
-          ElevatedButton(onPressed: onPressed, child: Text('Ascending')),
+          ElevatedButton(
+              onPressed: widget.onAscendingPressed, child: Text('Ascending')),
           // Descending Button
-          ElevatedButton(onPressed: onPressed, child: Text('Descending')),
+          ElevatedButton(
+              onPressed: widget.onDescendingPressed, child: Text('Descending')),
         ]),
-        Row(children: []),
+        Row(
+          children: (widget.filters ?? []).map((filter) {
+            return ElevatedButton(
+              onPressed: () {
+                filter.toggle();
+                widget.onFilterChanged?.call(filter.name);
+                setState(() {
+
+                });
+              },
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(
+                  filter.isSelected ? Colors.blue : Colors.grey,
+                ),
+              ),
+              child: Text(filter.name),
+            );
+          }).toList(),
+        ),
       ],
     );
   }

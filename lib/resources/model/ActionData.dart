@@ -1,27 +1,42 @@
 class ActionData {
   late int id;
-  final bool statusLed;
-  final bool statusFan;
+  final String device;
+  final bool status;
   final DateTime time;
 
   ActionData(
-      {required this.statusLed,
-      required this.statusFan,
-      required this.time,
-      id});
+      {required this.device, required this.status, required this.time, id}) {
+    if (id != null) {
+      this.id = id;
+    }
+  }
+
+  ActionData copyWith({
+    int? id,
+    String? device,
+    bool? status,
+    DateTime? time,
+  }) {
+    return ActionData(
+      id: id ?? this.id,
+      device: device ?? this.device,
+      status: status ?? this.status,
+      time: time ?? this.time,
+    );
+  }
 
   factory ActionData.fromJson(Map<String, dynamic> json) {
     return ActionData(
       id: json['id'],
-      statusLed: json['statusLed'],
-      statusFan: json['statusFan'],
-      time: DateTime.parse(json['date']),
+      device: json['device'],
+      status: json['status'],
+      time: DateTime.fromMillisecondsSinceEpoch(json['date']),
     );
   }
 
   Map<String, dynamic> toJson() => {
-        'statusLed': statusLed,
-        'statusFan': statusFan,
-        'date': time.toString(),
+        'device': device,
+        'status': status,
+        'date': time.millisecondsSinceEpoch,
       };
 }

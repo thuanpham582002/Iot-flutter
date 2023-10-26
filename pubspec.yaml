@@ -74,6 +74,7 @@ flutter:
   assets:
     - assets/lottie/fan.json
     - assets/lottie/light_bulb.json
+    - assets/lottie/air_conditioner.json
     - assets/image/avatar.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see

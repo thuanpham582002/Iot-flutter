@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "397759320317",
+    "firebase_url": "https://iot-dashboard-a48b7-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "iot-dashboard-a48b7",
+    "storage_bucket": "iot-dashboard-a48b7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:397759320317:android:48abf735e4903b6652ae94",
+        "android_client_info": {
+          "package_name": "com.example.iot_dashboard"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSYnyqRtoZhHGjrMDcTB-URVWSptN8AII"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
