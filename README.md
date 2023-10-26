@@ -1,30 +1,30 @@
-# iot_dashboard
+#iot_dashboard
 
-Project for the IoT course at PTIT by Mr. Uy.
+Project for the IoT course at PTIT by Mr. Wow.
 
 ## Getting Started
 
-Dự án này sử dụng Flutter để làm UI, firebase Realtime Database để lưu trữ dữ liệu và ESP8266(Phần
-cứng)
-để nhận và gửi dữ liệu lên front-end thông qua MQTT.
+This project uses Flutter to make UI, firebase Realtime Database to store data and ESP8266(Part
+hard)
+to receive and send data to the front-end via MQTT.
 
 ## Setup
 
 ### Front-end
 
-- Cài đặt Flutter SDK
-- Cài đặt Android Studio
-- Cài đặt Android SDK
-- Cài đặt Dart và Flutter plugin cho Android Studio
-- Clone project này về mở bằng Android Studio
-- Chạy lệnh `flutter pub get` để cài đặt các dependencies
-- Tiếp theo cần set up fire base: [Here](https://firebase.google.com/docs/database/flutter/start)
+- Install Flutter SDK
+- Install Android Studio
+- Install Android SDK
+- Install Dart and Flutter plugins for Android Studio
+- Clone this project and open it with Android Studio
+- Run `flutter pub get` command to install dependencies
+- Next you need to set up fire base: [Here](https://firebase.google.com/docs/database/flutter/start)
 
 ### Hardware
 
-- Cài đặt Arduino IDE
-- Cài đặt các thư viện ần thiết trong thư mục embedded/lib
-- Tạo một project mới trong Arduino IDE và dán code trong embedded/sketch_sketch_sep29a/sketch_sep29a.ino vào
+- Install Arduino IDE
+- Install necessary libraries in the embedded/lib directory
+- Create a new project in Arduino IDE and paste the code in embedded/sketch_sketch_sep29a/sketch_sep29a.ino into
 - Done
 
   
