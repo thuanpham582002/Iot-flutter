@@ -1,6 +1,6 @@
 # iot_dashboard
 
-Project for the IoT course at PTIT by Mr.Uy.
+A+ Project for the IoT course at PTIT by Mr.Uy.
 
 ## Getting Started
 
